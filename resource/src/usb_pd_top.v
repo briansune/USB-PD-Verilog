@@ -34,7 +34,7 @@ module usb_pd_top#(
 );
 	
 	localparam mmcm_freq = 30000;
-	localparam	[15 : 0] oh_us_delay = (mmcm_freq / 10) - 1;
+	localparam	[19 : 0] oh_us_delay = (mmcm_freq / 10) - 1;
 	
 	wire				glb_clk;
 	wire				glb_nrst;
@@ -178,7 +178,7 @@ module usb_pd_top#(
 				fsm_error			= fsm_idle + 1;
 	// =================================
 	
-	reg		[15 : 0]		delay_abit;
+	reg		[19 : 0]		delay_abit;
 	
 	ila_0 dut_ila (
 		.clk		(glb_clk),
@@ -206,7 +206,7 @@ module usb_pd_top#(
 			wr_words[5] <= 32'd0;
 			wr_words[6] <= 32'd0;
 			
-			delay_abit <= 16'd0;
+			delay_abit <= 20'd0;
 			
 			wr_hrst <= 1'b0;
 			wr_num <= 3'd0;
@@ -222,7 +222,7 @@ module usb_pd_top#(
 					main_fsm <= fsm_ck_cc;
 					cc_check <= 1'b0;
 					bmc_wen <= 1'b0;
-					delay_abit <= 16'd0;
+					delay_abit <= 20'd0;
 				end
 				
 				fsm_ck_cc: begin
@@ -236,11 +236,11 @@ module usb_pd_top#(
 				end
 				
 				fsm_wait_pre_msg: begin
-					if(delay_abit == {16{1'b1}})begin
+					if(delay_abit == {20{1'b1}})begin
 						main_fsm <= fsm_wait_pd_cap;
-						delay_abit <= 16'd0;
+						delay_abit <= 20'd0;
 					end else begin
-						delay_abit <= delay_abit + 16'd1;
+						delay_abit <= delay_abit + 20'd1;
 					end
 				end
 				
@@ -271,7 +271,7 @@ module usb_pd_top#(
 					if(delay_abit >= oh_us_delay)begin
 						
 						if(!bmc_rd_busy)begin
-							delay_abit <= 16'd0;
+							delay_abit <= 20'd0;
 							bmc_wen <= 1'b1;
 							
 							main_fsm <= fsm_crc0_done;
@@ -281,7 +281,7 @@ module usb_pd_top#(
 						end
 						
 					end else begin
-						delay_abit <= delay_abit + 16'd1;
+						delay_abit <= delay_abit + 20'd1;
 					end
 				end
 				
@@ -290,11 +290,11 @@ module usb_pd_top#(
 					bmc_wen <= 1'b0;
 					
 					if(!cc_io_ctrl)begin
-						delay_abit <= delay_abit + 16'd1;
+						delay_abit <= delay_abit + 20'd1;
 					end
 					
 					if(delay_abit >= (oh_us_delay / 2))begin
-						delay_abit <= 16'd0;
+						delay_abit <= 20'd0;
 						main_fsm <= fsm_req_pwr;
 					end
 					
@@ -309,38 +309,34 @@ module usb_pd_top#(
 					
 					wr_word[31] <= 1'b0;
 					
-					if(rd_words[0][10+:10] == volt_sel_50mv)begin
+					if(wr_words[0][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd1;
-						wr_word[0 +: 10] <= rd_words[0][0+:10];
-						wr_word[10 +: 10] <= rd_words[0][0+:10];
-					end else if(rd_words[1][10+:10] == volt_sel_50mv)begin
+						wr_word[0 +: 10] <= wr_words[0][0+:10];
+						wr_word[10 +: 10] <= wr_words[0][0+:10];
+					end else if(wr_words[1][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd2;
-						wr_word[0 +: 10] <= rd_words[1][0+:10];
-						wr_word[10 +: 10] <= rd_words[1][0+:10];
-					end else if(rd_words[2][10+:10] == volt_sel_50mv)begin
+						wr_word[0 +: 10] <= wr_words[1][0+:10];
+						wr_word[10 +: 10] <= wr_words[1][0+:10];
+					end else if(wr_words[2][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd3;
-						wr_word[0 +: 10] <= rd_words[2][0+:10];
-						wr_word[10 +: 10] <= rd_words[2][0+:10];
-					end else if(rd_words[3][10+:10] == volt_sel_50mv)begin
+						wr_word[0 +: 10] <= wr_words[2][0+:10];
+						wr_word[10 +: 10] <= wr_words[2][0+:10];
+					end else if(wr_words[3][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd4;
-						wr_word[0 +: 10] <= rd_words[3][0+:10];
-						wr_word[10 +: 10] <= rd_words[3][0+:10];
-					end else if(rd_words[4][10+:10] == volt_sel_50mv)begin
+						wr_word[0 +: 10] <= wr_words[3][0+:10];
+						wr_word[10 +: 10] <= wr_words[3][0+:10];
+					end else if(wr_words[4][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd5;
-						wr_word[0 +: 10] <= rd_words[4][0+:10];
-						wr_word[10 +: 10] <= rd_words[4][0+:10];
-					end else if(rd_words[5][10+:10] == volt_sel_50mv)begin
+						wr_word[0 +: 10] <= wr_words[4][0+:10];
+						wr_word[10 +: 10] <= wr_words[4][0+:10];
+					end else if(wr_words[5][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd6;
-						wr_word[0 +: 10] <= rd_words[5][0+:10];
-						wr_word[10 +: 10] <= rd_words[5][0+:10];
-					end else if(rd_words[6][10+:10] == volt_sel_50mv)begin
+						wr_word[0 +: 10] <= wr_words[5][0+:10];
+						wr_word[10 +: 10] <= wr_words[5][0+:10];
+					end else if(wr_words[6][10+:10] == volt_sel_50mv)begin
 						wr_word[30 : 28] <= 3'd7;
-						wr_word[0 +: 10] <= rd_words[6][0+:10];
-						wr_word[10 +: 10] <= rd_words[6][0+:10];
-					end else begin
-						wr_word[30 : 28] <= 3'd0;
-						wr_word[0 +: 10] <= 10'd0;
-						wr_word[10 +: 10] <= 10'd0;
+						wr_word[0 +: 10] <= wr_words[6][0+:10];
+						wr_word[10 +: 10] <= wr_words[6][0+:10];
 					end
 					
 					wr_word[27 : 25] <= 3'd0;
@@ -357,7 +353,9 @@ module usb_pd_top#(
 						wr_word[30 : 28] == 3'd0
 					)begin
 						main_fsm <= fsm_error;
-					end else if(!bmc_rd_busy)begin
+					end
+					
+					if(!bmc_rd_busy)begin
 						bmc_wen <= 1'b1;
 						
 						if(cc_io_ctrl)begin
@@ -372,6 +370,8 @@ module usb_pd_top#(
 					if(!cc_io_ctrl & bmc_rd_busy)begin
 						main_fsm <= fsm_ck_crc_good1;
 					end
+					
+					delay_abit <= 20'd0;
 				end
 				
 				fsm_ck_crc_good1: begin
@@ -383,6 +383,13 @@ module usb_pd_top#(
 					)begin
 						main_fsm <= fsm_wait_accept;
 					end
+					
+					if(delay_abit >= {20{1'b1}})begin
+						main_fsm <= fsm_fpon;
+						delay_abit <= 20'd0;
+					end else begin
+						delay_abit <= delay_abit + 20'd1;
+					end
 				end
 				
 				fsm_wait_accept: begin
@@ -393,7 +400,7 @@ module usb_pd_top#(
 						main_fsm <= fsm_crc_good2;
 					end
 					
-					delay_abit <= 16'd0;
+					delay_abit <= 20'd0;
 				end
 				
 				fsm_crc_good2: begin
@@ -407,7 +414,7 @@ module usb_pd_top#(
 								main_fsm <= fsm_wait_ps_rdy;
 							bmc_wen <= 1'b1;
 						end else begin
-							delay_abit <= delay_abit + 16'd1;
+							delay_abit <= delay_abit + 20'd1;
 						end
 					end
 				end
@@ -423,7 +430,7 @@ module usb_pd_top#(
 						main_fsm <= fsm_crc_good3;
 					end
 					
-					delay_abit <= 16'd0;
+					delay_abit <= 20'd0;
 				end
 				
 				fsm_crc_good3: begin
@@ -431,7 +438,7 @@ module usb_pd_top#(
 					if(delay_abit >= oh_us_delay)begin
 						
 						if(!bmc_rd_busy)begin
-							delay_abit <= 16'd0;
+							delay_abit <= 20'd0;
 							bmc_wen <= 1'b1;
 							
 							main_fsm <= fsm_idle;
@@ -441,7 +448,7 @@ module usb_pd_top#(
 						end
 						
 					end else begin
-						delay_abit <= delay_abit + 16'd1;
+						delay_abit <= delay_abit + 20'd1;
 					end
 				end
 				
