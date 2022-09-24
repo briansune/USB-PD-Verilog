@@ -2,7 +2,12 @@
 
 This example shows how to trigger USB Type-C Power Delivery via BMC "Biphase Mark Coding"
 
-| Type	| Usage | 
+The purpose is to create a differential voltage for LVDS and an additional driver to the CC1,CC2 line.
+
+The on board IO bank can tuned to the voltage level of USB type-C while the restriction of this FPGA dev board is avoiding to do so.
+
+| Type	| Usage |
+|-------|-------|
 | LUT	| 863	|
 | FF	| 912	|
 | IO	| 11	|
@@ -11,7 +16,7 @@ This example shows how to trigger USB Type-C Power Delivery via BMC "Biphase Mar
 
 # Demo Board and FPGA - Spartan 7
 
-![Alt text](images/demo.jpg?raw=true "Title")
+![Alt text](image/demo.JPG?raw=true "Title")
 
 ## Reference Links:
 1: https://www.usbzh.com/article/detail-368.html
