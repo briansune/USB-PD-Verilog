@@ -11,8 +11,8 @@ The on board IO bank can tuned to the voltage level of USB type-C while the rest
 | LUT	| 863	|
 | FF	| 912	|
 | IO	| 11	|
-| BUFG	| 2	16	|
-| MMCM	| 1	2	|
+| BUFG	| 2	|
+| MMCM	| 1	|
 
 # Demo Board and FPGA - Spartan 7
 
