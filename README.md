@@ -2,6 +2,17 @@
 
 This example shows how to trigger USB Type-C Power Delivery via BMC "Biphase Mark Coding"
 
+| Type	| Usage | 
+| LUT	| 863	|
+| FF	| 912	|
+| IO	| 11	|
+| BUFG	| 2	16	|
+| MMCM	| 1	2	|
+
+# Demo Board and FPGA - Spartan 7
+
+![Alt text](images/demo.jpg?raw=true "Title")
+
 ## Reference Links:
 1: https://www.usbzh.com/article/detail-368.html
 
