@@ -2,9 +2,11 @@
 
 This example shows how to trigger USB Type-C Power Delivery via BMC "Biphase Mark Coding"
 
-The purpose is to create a differential voltage for LVDS and an additional driver to the CC1,CC2 line.
+The on board IO bank can be tuned to the voltage level of USB type-C CC lines while the restriction of this FPGA dev board is avoiding to do so.
 
-The on board IO bank can tuned to the voltage level of USB type-C while the restriction of this FPGA dev board is avoiding to do so.
+Meanwhile, the purpose of additional PCB is to create a differential voltage for LVDS and an additional driver to the CC1,CC2 line.
+
+The overall bill-of-materials (BOM) can be as low as two resistor as long as the IO bank voltage is meeting the voltage requirement of CC line.
 
 | Type	| Usage |
 |-------|-------|
